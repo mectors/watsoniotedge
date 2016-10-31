@@ -1,0 +1,25 @@
+name: watsoniotedge
+version: 0.1
+summary: Runs Watson IoT Edge Snap
+description: This snap is the Watson IoT Edge Snap
+confinement: strict  # use "strict" to enforce system access only via declared interfaces
+grade: stable # use "stable" to assert the snap quality
+apps:
+  init:
+    command: bin/init.sh
+    plugs: [ network-bind , network ]
+  run:
+    command: bin/run.sh
+    daemon: simple
+    restart-condition: always
+    plugs: [ network-bind , network ]
+parts:
+  watson:
+    plugin: nodejs
+    source: https://github.com/ibm-watson-iot/iot-nodejs.git
+    node-packages: [commander, babel, mocha, jsonfile, mqtt]
+  move:
+    plugin: dump
+    source: src
+    organize:
+      'github.com/mectors/watsoniotedge/*': bin/
